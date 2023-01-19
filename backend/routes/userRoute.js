@@ -1,6 +1,24 @@
 /** @format */
 
 const express = require("express");
+
+const AWS = require("aws-sdk");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const s3Client = new AWS.S3({
+  accessKeyId: "AKIAX7CZWZG6AANTPWT5",
+  secretAccessKey: "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",
+});
+
+const uploadParams = {
+  Bucket: "ravivcloud",
+  Key: "", // pass key
+  Body: null, // pass file body
+  acl: "public-read ",
+};
+
 const {
   registerUser,
   loginUser,
@@ -11,6 +29,7 @@ const {
   updatePassword,
   updateProfile,
   getAllUser,
+  getAllConteur,
   getSingleUser,
   updateUserRole,
   deleteUser,
@@ -39,11 +58,32 @@ router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 router
   .route("/admin/users")
   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
+router
+  .route("/admin/conteurs")
+  .get(isAuthenticatedUser, authorizeRoles("admin"), getAllConteur);
 // Get Single User / Update Single User / Delete Single User
 router
   .route("/admin/user/:id")
   .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserRole)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
+
+router.post("/api/file/upload", upload.single("file"), (req, res) => {
+  const params = uploadParams;
+
+  uploadParams.Key = req.file.originalname;
+  uploadParams.Body = req.file.buffer;
+
+  s3Client.upload(params, (err, data) => {
+    if (err) {
+      res.status(500).json({ error: "Error -> " + err });
+    }
+    res.json({
+      message: "File uploaded successfully",
+      filename: Date.now().toString(),
+      location: data.Location,
+    });
+  });
+});
 
 module.exports = router;

@@ -188,7 +188,17 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 
 // Get all users(admin)
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
-  const users = await User.find();
+  const users = await User.find({ role: "user" });
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+// Get all conteurs(admin)
+exports.getAllConteur = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find({ role: "conteur" });
 
   res.status(200).json({
     success: true,
@@ -215,9 +225,7 @@ exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
 // update User Role -- Admin
 exports.updateUserRole = catchAsyncErrors(async (req, res, next) => {
   const newUserData = {
-    name: req.body.name,
-    email: req.body.email,
-    role: req.body.role,
+    role: "conteur",
   };
 
   await User.findByIdAndUpdate(req.params.id, newUserData, {
