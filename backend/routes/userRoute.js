@@ -2,23 +2,6 @@
 
 const express = require("express");
 
-const AWS = require("aws-sdk");
-const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-const s3Client = new AWS.S3({
-  accessKeyId: "AKIA6AQ6CF7BCNGC2RXA",
-  secretAccessKey: "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",
-});
-
-const uploadParams = {
-  Bucket: "racine-vivante",
-  Key: "", // pass key
-  Body: null, // pass file body
-  acl: "public-read ",
-};
-
 const {
   registerUser,
   loginUser,
@@ -67,23 +50,5 @@ router
   .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserRole)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
-
-router.post("/api/file/upload", upload.single("file"), (req, res) => {
-  const params = uploadParams;
-
-  uploadParams.Key = req.file.originalname;
-  uploadParams.Body = req.file.buffer;
-
-  s3Client.upload(params, (err, data) => {
-    if (err) {
-      res.status(500).json({ error: "Error -> " + err });
-    }
-    res.json({
-      message: "File uploaded successfully",
-      filename: Date.now().toString(),
-      location: data.Location,
-    });
-  });
-});
 
 module.exports = router;
