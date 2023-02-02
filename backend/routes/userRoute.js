@@ -8,12 +8,12 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const s3Client = new AWS.S3({
-  accessKeyId: "AKIAX7CZWZG6AANTPWT5",
-  secretAccessKey: "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",
+  accessKeyId: "AKIA6AQ6CF7BCNGC2RXA",
+  secretAccessKey: "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",
 });
 
 const uploadParams = {
-  Bucket: "ravivcloud",
+  Bucket: "racine-vivante",
   Key: "", // pass key
   Body: null, // pass file body
   acl: "public-read ",

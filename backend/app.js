@@ -11,8 +11,10 @@ app.use(cookieParser());
 
 // Route Imports d
 const user = require("./routes/userRoute");
+const tale = require("./routes/taleRoute");
 
 app.use("/api/v1", user);
+app.use("/api/v1", tale);
 
 // Middleware for Errors
 app.use(errorMiddleware);
