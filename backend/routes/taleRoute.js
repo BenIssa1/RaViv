@@ -22,13 +22,14 @@ router.post(
   "/admin/tale/new",
   upload.single("file"),
   isAuthenticatedUser,
+  authorizeRoles("conteur"),
   createTale
 );
 
 // Get All Users
 router
   .route("/admin/tales")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getAdminTales);
+  .get(isAuthenticatedUser, authorizeRoles("conteur"), getAdminTales);
 
 // Get Single User / Update Single User / Delete Single User
 router

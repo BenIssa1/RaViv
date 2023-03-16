@@ -15,6 +15,14 @@ const taleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  typeTale: {
+    type: String,
+    required: true,
+  },
+  language: {
+    type: String,
+    required: true,
+  },
   questions: [
     {
       question: {
@@ -27,9 +35,9 @@ const taleSchema = new mongoose.Schema({
       },
     },
   ],
-  user: {
+  storyteller: {
     type: mongoose.Schema.ObjectId,
-    ref: "User",
+    ref: "Storyteller",
     required: true,
   },
   createdAt: {

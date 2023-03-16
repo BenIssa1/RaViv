@@ -4,6 +4,8 @@ const AWS = require("aws-sdk");
 const ErrorHander = require("../utils/errorhander");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Tale = require("../models/taleModel");
+const Storyteller = require("../models/storytellerModel");
+const ApiFeatures = require("../utils/apifeatures");
 require("dotenv").config({ path: "backend/config/config.env" });
 
 let { ACCESSKEYID, SECRETACCESSKEY, BUCKET } = process.env;
@@ -22,31 +24,66 @@ const uploadParams = {
 
 // Create a Tale
 exports.createTale = catchAsyncErrors(async (req, res, next) => {
-  const params = uploadParams;
+  //const params = uploadParams;
 
-  uploadParams.Key = req.file.originalname;
-  uploadParams.Body = req.file.buffer;
+  // uploadParams.Key = req.file.originalname;
+  // uploadParams.Body = req.file.buffer;
 
-  s3Client.upload(params, async (err, data) => {
-    if (err) {
-      return next(new ErrorHander(err));
-    }
+  // s3Client.upload(params, async (err, data) => {
+  //   if (err) {
+  //     return next(new ErrorHander(err));
+  //   }
 
-    req.body.user = req.user.id;
-    req.body.videoUrl = data.Location;
-    req.body.questions = JSON.parse(req.body.questions);
-    const tale = await Tale.create(req.body);
+  //   req.body.user = req.user.id;
+  //   req.body.videoUrl = data.Location;
+  //   req.body.questions = JSON.parse(req.body.questions);
+  //   const tale = await Tale.create(req.body);
 
-    res.status(201).json({
-      success: true,
-      tale,
-    });
+  //   res.status(201).json({
+  //     success: true,
+  //     tale,
+  //   });
+  // });
+  const storyteller = await Storyteller.findOne({ user: req.user.id });
+
+  if (!storyteller) {
+    return next(new ErrorHander("Storyteller not found", 404));
+  }
+
+  // Create tale
+  req.body.storyteller = storyteller._id;
+  const tale = await Tale.create(req.body);
+
+  // Add Tale to storyteller
+  let newUserStorytellerData = {
+    $push: {
+      tales: tale._id,
+    },
+  };
+
+  await Storyteller.findByIdAndUpdate(storyteller._id, newUserStorytellerData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(201).json({
+    success: true,
+    tale,
   });
 });
 
 // Get All Tale Admin(tale)
 exports.getAdminTales = catchAsyncErrors(async (req, res, next) => {
-  const tales = await Tale.find();
+  // const tales = await Tale.find();
+
+  const resultPerPage = 2;
+
+  const apiFeature = new ApiFeatures(Tale.find(), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const tales = await apiFeature.query;
 
   res.status(200).json({
     success: true,
