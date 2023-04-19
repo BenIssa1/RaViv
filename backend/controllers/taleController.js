@@ -24,52 +24,57 @@ const uploadParams = {
 
 // Create a Tale
 exports.createTale = catchAsyncErrors(async (req, res, next) => {
-  //const params = uploadParams;
+  const params = uploadParams;
 
-  // uploadParams.Key = req.file.originalname;
-  // uploadParams.Body = req.file.buffer;
+  uploadParams.Key = req.file.originalname;
+  uploadParams.Body = req.file.buffer;
 
-  // s3Client.upload(params, async (err, data) => {
-  //   if (err) {
-  //     return next(new ErrorHander(err));
-  //   }
+  s3Client.upload(params, async (err, data) => {
+    if (err) {
+      return next(new ErrorHander(err));
+    }
 
-  //   req.body.user = req.user.id;
-  //   req.body.videoUrl = data.Location;
-  //   req.body.questions = JSON.parse(req.body.questions);
-  //   const tale = await Tale.create(req.body);
+    req.body.user = req.user.id;
+    req.body.videoUrl = data.Location;
+    req.body.questions = JSON.parse(req.body.questions);
+    // const tale = await Tale.create(req.body);
 
-  //   res.status(201).json({
-  //     success: true,
-  //     tale,
-  //   });
-  // });
-  const storyteller = await Storyteller.findOne({ user: req.user.id });
+    // res.status(201).json({
+    //   success: true,
+    //   tale,
+    // });
 
-  if (!storyteller) {
-    return next(new ErrorHander("Storyteller not found", 404));
-  }
+    const storyteller = await Storyteller.findOne({ user: req.user.id });
 
-  // Create tale
-  req.body.storyteller = storyteller._id;
-  const tale = await Tale.create(req.body);
+    if (!storyteller) {
+      return next(new ErrorHander("Storyteller not found", 404));
+    }
 
-  // Add Tale to storyteller
-  let newUserStorytellerData = {
-    $push: {
-      tales: tale._id,
-    },
-  };
+    // Create tale
+    req.body.storyteller = storyteller._id;
+    const tale = await Tale.create(req.body);
 
-  await Storyteller.findByIdAndUpdate(storyteller._id, newUserStorytellerData, {
-    new: true,
-    runValidators: true,
-    useFindAndModify: false,
-  });
+    // Add Tale to storyteller
+    let newUserStorytellerData = {
+      $push: {
+        tales: tale._id,
+      },
+    };
 
-  res.status(201).json({
-    success: true,
-    tale,
+    await Storyteller.findByIdAndUpdate(
+      storyteller._id,
+      newUserStorytellerData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(201).json({
+      success: true,
+      tale,
+    });
   });
 });
 
