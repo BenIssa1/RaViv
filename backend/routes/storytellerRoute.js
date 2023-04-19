@@ -7,6 +7,7 @@ const {
   registerStoryteller,
   getAllStorytellerTales,
   getAllStorytellerAsked,
+  updateStoryteller,
   updateUserRoleAndStorytellerIsVerified,
 } = require("../controllers/storytellerController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -37,5 +38,9 @@ router
 router
   .route("/admin/storyteller-asked")
   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllStorytellerAsked);
+
+router
+  .route("/storyteller/update-profile/:id")
+  .put(isAuthenticatedUser, authorizeRoles("conteur"), updateStoryteller);
 
 module.exports = router;

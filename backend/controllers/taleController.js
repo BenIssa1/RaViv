@@ -77,7 +77,7 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
 exports.getAdminTales = catchAsyncErrors(async (req, res, next) => {
   // const tales = await Tale.find();
 
-  const resultPerPage = 2;
+  const resultPerPage = 8;
 
   const apiFeature = new ApiFeatures(Tale.find(), req.query)
     .search()
@@ -124,6 +124,67 @@ exports.updateTale = catchAsyncErrors(async (req, res, next) => {
     success: true,
     tale,
   });
+});
+
+// Update Like
+
+exports.updateTaleLike = catchAsyncErrors(async (req, res, next) => {
+  let tale = await Tale.findById(req.params.id);
+
+  if (!tale) {
+    return next(new ErrorHander("Tale not found", 404));
+  }
+
+  let datas = tale.userLikes;
+  let data = datas.find((element) => element == req.user.id);
+
+  if (data) {
+    // Delete likeUser to userLikes
+    let userLikesData = {
+      $pull: {
+        userLikes: req.user.id,
+      },
+      likeCount: tale.likeCount - 1,
+    };
+
+    let returnData = await Tale.findByIdAndUpdate(
+      req.params.id,
+      userLikesData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      returnData,
+    });
+  } else {
+    // Add likeUser to userLikes
+    let userLikesData = {
+      $push: {
+        userLikes: req.user.id,
+      },
+      likeCount: tale.likeCount + 1,
+    };
+
+    let returnData = await Tale.findByIdAndUpdate(
+      req.params.id,
+      userLikesData,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      returnData,
+    });
+  }
 });
 
 // Delete Tale

@@ -16,7 +16,10 @@ class ApiFeatures {
         }
       : {};
 
-    this.query = this.query.find({ ...keyword });
+    const dateSort =
+      this.queryStr.dateData == "recent" ? { createdAt: -1 } : { createdAt: 1 };
+
+    this.query = this.query.find({ ...keyword }).sort(dateSort);
     return this;
   }
 

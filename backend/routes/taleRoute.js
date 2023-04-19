@@ -12,6 +12,7 @@ const {
   getTaleDetails,
   updateTale,
   deleteTale,
+  updateTaleLike,
 } = require("../controllers/taleController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
@@ -27,9 +28,8 @@ router.post(
 );
 
 // Get All Users
-router
-  .route("/admin/tales")
-  .get(isAuthenticatedUser, authorizeRoles("conteur"), getAdminTales);
+router.route("/admin/tales").get(isAuthenticatedUser, getAdminTales);
+// .get(isAuthenticatedUser, authorizeRoles("conteur"), getAdminTales);
 
 // Get Single User / Update Single User / Delete Single User
 router
@@ -37,5 +37,7 @@ router
   .get(isAuthenticatedUser, authorizeRoles("admin"), getTaleDetails)
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateTale)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteTale);
+
+router.route("/tale-like/:id").put(isAuthenticatedUser, updateTaleLike);
 
 module.exports = router;

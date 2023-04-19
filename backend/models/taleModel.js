@@ -40,6 +40,22 @@ const taleSchema = new mongoose.Schema({
     ref: "Storyteller",
     required: true,
   },
+  comments: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "CommentTale",
+    },
+  ],
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
+  userLikes: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
