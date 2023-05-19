@@ -29,6 +29,12 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
   uploadParams.Key = req.file.originalname;
   uploadParams.Body = req.file.buffer;
 
+  const storyteller = await Storyteller.findOne({ user: req.user.id });
+
+  if (!storyteller) {
+    return next(new ErrorHander("Storyteller not found", 404));
+  }
+
   s3Client.upload(params, async (err, data) => {
     if (err) {
       return next(new ErrorHander(err));
@@ -37,18 +43,6 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
     req.body.user = req.user.id;
     req.body.videoUrl = data.Location;
     req.body.questions = JSON.parse(req.body.questions);
-    // const tale = await Tale.create(req.body);
-
-    // res.status(201).json({
-    //   success: true,
-    //   tale,
-    // });
-
-    const storyteller = await Storyteller.findOne({ user: req.user.id });
-
-    if (!storyteller) {
-      return next(new ErrorHander("Storyteller not found", 404));
-    }
 
     // Create tale
     req.body.storyteller = storyteller._id;

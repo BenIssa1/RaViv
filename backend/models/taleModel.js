@@ -23,16 +23,36 @@ const taleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // questions: [
+  //   {
+  //     question: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     response: {
+  //       type: Boolean,
+  //       required: true,
+  //     },
+  //   },
+  // ],
   questions: [
     {
       question: {
         type: String,
         required: true,
       },
-      response: {
-        type: Boolean,
-        required: true,
-      },
+      responses: [
+        {
+          response: {
+            type: String,
+            required: true,
+          },
+          result: {
+            type: Boolean,
+            required: true,
+          },
+        },
+      ],
     },
   ],
   storyteller: {
