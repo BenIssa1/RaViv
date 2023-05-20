@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const connectDatabase = () => {
   mongoose
-    .connect("mongodb+srv://raviv:4jjlGOwZ1dDsljAi@cluster0.lkpp6zt.mongodb.net/raviv-db?retryWrites=true&w=majority", {
+    .connect(process.env.DB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       // useCreateIndex: true,
