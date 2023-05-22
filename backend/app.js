@@ -2,6 +2,7 @@
 
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 const errorMiddleware = require("./middleware/error");
@@ -28,5 +29,8 @@ app.use("/api/v1", commentTaleRoute);
 
 // Middleware for Errors
 app.use(errorMiddleware);
+
+// cors
+app.use(cors());
 
 module.exports = app;
