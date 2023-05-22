@@ -31,6 +31,8 @@ app.use("/api/v1", commentTaleRoute);
 app.use(errorMiddleware);
 
 // cors
-app.use(cors());
+app.use(cors({
+  origin:"*"  
+));
 
 module.exports = app;
