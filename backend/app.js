@@ -32,7 +32,7 @@ app.use(errorMiddleware);
 
 // cors
 app.use(cors({
-  origin:"*"  
+  origin: ['https://creative-frangollo-8407ae.netlify.app/'] 
 ));
 
 module.exports = app;
