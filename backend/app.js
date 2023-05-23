@@ -30,9 +30,10 @@ app.use("/api/v1", commentTaleRoute);
 // Middleware for Errors
 app.use(errorMiddleware);
 
-// cors
-app.use(cors({
-  origin: "*"
-}));
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 
 module.exports = app;
