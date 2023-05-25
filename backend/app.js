@@ -6,7 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 app.use(cors({
-    origin: ['https://creative-frangollo-8407ae.netlify.app/','https://creative-frangollo-8407ae.netlify.app' ]
+    origin: ['https://cheerful-zabaione-d41673.netlify.app/','https://cheerful-zabaione-d41673.netlify.app' ]
 }));
 
 const errorMiddleware = require("./middleware/error");
