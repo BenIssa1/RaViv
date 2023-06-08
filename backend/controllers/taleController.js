@@ -105,7 +105,9 @@ exports.getAdminTales = catchAsyncErrors(async (req, res, next) => {
 
 // Get Tale Details
 exports.getTaleDetails = catchAsyncErrors(async (req, res, next) => {
-  const tale = await Tale.findById(req.params.id);
+  const tale = await Tale.findById(req.params.id).populate(
+    "comments storyteller"
+  );
 
   if (!tale) {
     return next(new ErrorHander("Tale not found", 404));
