@@ -8,6 +8,8 @@ const Storyteller = require("../models/storytellerModel");
 const ApiFeatures = require("../utils/apifeatures");
 require("dotenv").config({ path: "backend/config/config.env" });
 
+const fs = require("fs");
+
 let { ACCESSKEYID, SECRETACCESSKEY, BUCKET } = process.env;
 
 const s3Client = new AWS.S3({
@@ -35,6 +37,14 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander("Storyteller not found", 404));
   }
 
+  let questions = [
+    JSON.parse(req.body.questions1),
+    JSON.parse(req.body.questions2),
+    JSON.parse(req.body.questions3),
+  ];
+
+  // console.log(JSON.parse(req.body.questions1));
+
   s3Client.upload(params, async (err, data) => {
     if (err) {
       return next(new ErrorHander(err));
@@ -42,7 +52,7 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
 
     req.body.user = req.user.id;
     req.body.videoUrl = data.Location;
-    req.body.questions = JSON.parse(req.body.questions);
+    req.body.questions = questions;
 
     // Create tale
     req.body.storyteller = storyteller._id;
@@ -78,7 +88,10 @@ exports.getAdminTales = catchAsyncErrors(async (req, res, next) => {
 
   const resultPerPage = 8;
 
-  const apiFeature = new ApiFeatures(Tale.find(), req.query)
+  const apiFeature = new ApiFeatures(
+    Tale.find().populate("comments storyteller"),
+    req.query
+  )
     .search()
     .filter()
     .pagination(resultPerPage);
@@ -197,6 +210,15 @@ exports.deleteTale = catchAsyncErrors(async (req, res, next) => {
 
   await tale.remove();
 
+  res.status(200).json({
+    success: true,
+    message: "Tale Delete Successfully",
+  });
+});
+
+// Delete Tale
+
+exports.test = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Tale Delete Successfully",

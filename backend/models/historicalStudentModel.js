@@ -3,9 +3,9 @@
 const mongoose = require("mongoose");
 
 const historicalStudentSchema = new mongoose.Schema({
-  student: {
+  user: {
     type: mongoose.Schema.ObjectId,
-    ref: "Student",
+    ref: "User",
     required: true,
   },
   tale: {

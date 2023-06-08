@@ -4,15 +4,20 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-
-app.use(cors({
-    origin: ['https://cheerful-zabaione-d41673.netlify.app/','https://cheerful-zabaione-d41673.netlify.app' ]
-}));
+const bodyParser = require("body-parser");
 
 const errorMiddleware = require("./middleware/error");
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 // Route Imports
 const user = require("./routes/userRoute");
@@ -34,5 +39,6 @@ app.use("/api/v1", commentTaleRoute);
 // Middleware for Errors
 app.use(errorMiddleware);
 
+// cors
 
 module.exports = app;

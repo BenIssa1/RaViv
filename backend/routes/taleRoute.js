@@ -13,6 +13,7 @@ const {
   updateTale,
   deleteTale,
   updateTaleLike,
+  test,
 } = require("../controllers/taleController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
@@ -30,6 +31,8 @@ router.post(
 // Get All Users
 router.route("/admin/tales").get(isAuthenticatedUser, getAdminTales);
 // .get(isAuthenticatedUser, authorizeRoles("conteur"), getAdminTales);
+
+router.route("/admin/test").get(isAuthenticatedUser, test);
 
 // Get Single User / Update Single User / Delete Single User
 router
