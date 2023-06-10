@@ -180,7 +180,9 @@ exports.updateHistoryStudentNoteAndPercent = catchAsyncErrors(
 
 // Get all ParentAsked
 exports.getAllNote = catchAsyncErrors(async (req, res, next) => {
-  const notes = await HistoricalStudent.find({ user: req.user.id });
+  const notes = await HistoricalStudent.find({ user: req.user.id }).populate(
+    "tale"
+  );
 
   res.status(200).json({
     success: true,
