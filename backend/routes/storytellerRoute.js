@@ -31,9 +31,7 @@ router
   .route("/storyteller/tales")
   .get(isAuthenticatedUser, authorizeRoles("conteur"), getAllStorytellerTales);
 
-router
-  .route("/admin/storyteller")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getAllStoryteller);
+router.route("/storyteller/list").get(isAuthenticatedUser, getAllStoryteller);
 
 router
   .route("/admin/storyteller-asked")

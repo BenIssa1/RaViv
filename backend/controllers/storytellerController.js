@@ -60,7 +60,7 @@ exports.getAllStorytellerAsked = catchAsyncErrors(async (req, res, next) => {
 
 // Get all storyteller
 exports.getAllStoryteller = catchAsyncErrors(async (req, res, next) => {
-  const users = await Storyteller.find({ isVerified: true });
+  const users = await Storyteller.find({ isVerified: true }).populate("user");
 
   res.status(200).json({
     success: true,
