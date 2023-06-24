@@ -14,6 +14,7 @@ const {
   deleteTale,
   updateTaleLike,
   test,
+  getAllTales,
 } = require("../controllers/taleController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
@@ -40,6 +41,8 @@ router
   .get(isAuthenticatedUser, getTaleDetails)
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateTale)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteTale);
+
+router.route("/storyteller/tales/:id").get(isAuthenticatedUser, getAllTales);
 
 router.route("/tale-like/:id").put(isAuthenticatedUser, updateTaleLike);
 

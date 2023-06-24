@@ -119,6 +119,22 @@ exports.getTaleDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Get Tale Details
+exports.getAllTales = catchAsyncErrors(async (req, res, next) => {
+  const tale = await Tale.find({ storyteller: req.params.id }).populate(
+    "comments storyteller"
+  );
+
+  if (!tale) {
+    return next(new ErrorHander("Tale not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    tale,
+  });
+});
+
 // Update Product -- Admin(tale)
 
 exports.updateTale = catchAsyncErrors(async (req, res, next) => {
