@@ -104,3 +104,18 @@ exports.updateStoryteller = catchAsyncErrors(async (req, res, next) => {
     storyteller,
   });
 });
+
+exports.getStorytellerDetails = catchAsyncErrors(async (req, res, next) => {
+  let storyteller = await Storyteller.findById(req.params.id).populate({
+    path: "tales",
+  });
+
+  if (!storyteller) {
+    return next(new ErrorHander("Storyteller not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    storyteller,
+  });
+});

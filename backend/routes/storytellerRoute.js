@@ -8,6 +8,7 @@ const {
   getAllStorytellerTales,
   getAllStorytellerAsked,
   updateStoryteller,
+  getStorytellerDetails,
   updateUserRoleAndStorytellerIsVerified,
 } = require("../controllers/storytellerController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -21,6 +22,7 @@ router
 
 router
   .route("/storyteller/:id")
+  .get(isAuthenticatedUser, getStorytellerDetails)
   .put(
     isAuthenticatedUser,
     authorizeRoles("admin"),
