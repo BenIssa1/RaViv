@@ -33,7 +33,7 @@ router
   .route("/storyteller/tales")
   .get(isAuthenticatedUser, authorizeRoles("conteur"), getAllStorytellerTales);
 
-router.route("/storyteller/list").get(isAuthenticatedUser, getAllStoryteller);
+router.route("/list-storyteller").get(isAuthenticatedUser, getAllStoryteller);
 
 router
   .route("/admin/storyteller-asked")
