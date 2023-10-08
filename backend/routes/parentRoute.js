@@ -12,6 +12,8 @@ const {
   updateStudent,
   updateParent,
   deleteStudent,
+  getAllStudentsHistoriques,
+  getAllStudentHistoriques
 } = require("../controllers/parentController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
@@ -62,5 +64,13 @@ router
 router
   .route("/parent/:id")
   .put(isAuthenticatedUser, authorizeRoles("parent", "teacher"), updateParent);
+
+router
+  .route("/parent/students/historiques")
+  .get(isAuthenticatedUser, authorizeRoles("parent"), getAllStudentsHistoriques);
+
+router
+  .route("/parent/student/:studentId/historiques")
+  .get(isAuthenticatedUser, authorizeRoles("parent"), getAllStudentHistoriques);
 
 module.exports = router;

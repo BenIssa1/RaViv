@@ -5,6 +5,7 @@ const Parent = require("../models/parentModel");
 const User = require("../models/userModel");
 const Student = require("../models/studentModel");
 const sendToken = require("../utils/jwtTokens");
+const HistoricalStudent = require("../models/historicalStudentModel");
 
 // Register a Parent
 exports.registerParent = catchAsyncErrors(async (req, res, next) => {
@@ -212,5 +213,46 @@ exports.deleteStudent = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Student Delete Successfully",
+  });
+});
+
+// Get all Parent
+exports.getAllStudentsHistoriques = catchAsyncErrors(async (req, res, next) => {
+  const parent = await Parent.findOne({ user: req.user.id }).populate('students');
+  const studentsIds = parent.students;
+  const historicalStudents = []
+
+
+
+  for (let index = 0; index < studentsIds.length; index++) {
+    const element = studentsIds[index];
+
+    let historicalStudentAll = await HistoricalStudent.find({user: element.user});
+
+    for (let index2 = 0; index2 < historicalStudentAll.length; index2++) {
+      const element = historicalStudentAll[index2];
+      
+      if (element)
+      historicalStudents.push(element)
+    }
+
+  }
+
+  res.status(200).json({
+    success: true,
+    studentsIds,
+    historicalStudents
+  });
+});
+
+// Get all Parent
+exports.getAllStudentHistoriques = catchAsyncErrors(async (req, res, next) => {
+  const student = await Student.findById(req.params.studentId);
+  
+  let StudentHistoricalAll = await HistoricalStudent.find({user: student.user});
+
+  res.status(200).json({
+    success: true,
+    StudentHistoricalAll
   });
 });

@@ -52,3 +52,16 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
     }
   }
 });
+
+
+// Get User Detail
+exports.getCountStudet = catchAsyncErrors(async (req, res, next) => {
+  // Get parent
+  const parent = await Parent.findOne({ user: req.user.id });
+  const studentCountOfParent = await Student.find({parent: parent._id}).count();
+
+  res.status(200).json({
+    success: true,
+    studentCountOfParent,
+  });
+});
