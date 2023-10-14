@@ -23,6 +23,12 @@ const taleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  imageBackground: {
+    type: String,
+    required: false,
+    default: 'https://i.pinimg.com/originals/d9/66/cb/d966cbf3aadc0db38adc92769a907f63.jpg'
+  },
+  
   // questions: [
   //   {
   //     question: {

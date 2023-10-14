@@ -115,6 +115,14 @@ exports.updateTale = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander("Tale not found", 404));
   }
 
+  let questions = [
+    JSON.parse(req.body.questions1),
+    JSON.parse(req.body.questions2),
+    JSON.parse(req.body.questions3),
+  ];
+
+  req.body.questions = questions;
+
   tale = await Tale.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
