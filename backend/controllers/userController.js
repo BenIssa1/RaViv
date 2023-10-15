@@ -174,6 +174,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     avatar: {
+      public_id: 'Id',
       url: req.body.urlImage
     }
   };
