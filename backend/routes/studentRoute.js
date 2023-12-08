@@ -2,7 +2,7 @@
 
 const express = require("express");
 
-const { registerStudent, getCountStudet } = require("../controllers/studentController");
+const { registerStudent, getCountStudet, searchStudent } = require("../controllers/studentController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
 const router = express.Router();
@@ -19,5 +19,9 @@ router
 router
   .route("/student/parent/count")
   .get(isAuthenticatedUser, authorizeRoles("parent"), getCountStudet);
+
+router
+  .route("/search/students/:name")
+  .get(searchStudent);
 
 module.exports = router;

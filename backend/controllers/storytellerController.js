@@ -3,6 +3,7 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Storyteller = require("../models/storytellerModel");
 const User = require("../models/userModel");
+const ApiFeatures = require("../utils/apifeatures");
 
 // Register a Storyteller
 exports.registerStoryteller = catchAsyncErrors(async (req, res, next) => {
@@ -50,7 +51,18 @@ exports.updateUserRoleAndStorytellerIsVerified = catchAsyncErrors(
 
 // Get all storytellerAsked
 exports.getAllStorytellerAsked = catchAsyncErrors(async (req, res, next) => {
-  const users = await Storyteller.find({ isVerified: false });
+  /* const users = await Storyteller.find({ isVerified: false }); */
+
+  const resultPerPage = 8;
+
+  const apiFeature = new ApiFeatures(
+    Storyteller.find({ isVerified: false }),
+    req.query
+  )
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const users = await apiFeature.query;
 
   res.status(200).json({
     success: true,
@@ -60,7 +72,18 @@ exports.getAllStorytellerAsked = catchAsyncErrors(async (req, res, next) => {
 
 // Get all storyteller
 exports.getAllStoryteller = catchAsyncErrors(async (req, res, next) => {
-  const users = await Storyteller.find({ isVerified: true }).populate("user");
+  /* const users = await Storyteller.find({ isVerified: true }).populate("user"); */
+
+  const resultPerPage = 8;
+
+  const apiFeature = new ApiFeatures(
+    Storyteller.find({ isVerified: true }).populate("user"),
+    req.query
+  )
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const users = await apiFeature.query;
 
   res.status(200).json({
     success: true,

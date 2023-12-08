@@ -30,7 +30,7 @@ router.post(
 );
 
 // Get All Users
-router.route("/admin/tales").get(isAuthenticatedUser, getAdminTales);
+router.route("/admin/tales").get( getAdminTales);
 // .get(isAuthenticatedUser, authorizeRoles("conteur"), getAdminTales);
 
 router.route("/admin/test").get(isAuthenticatedUser, test);
@@ -38,7 +38,7 @@ router.route("/admin/test").get(isAuthenticatedUser, test);
 // Get Single User / Update Single User / Delete Single User
 router
   .route("/admin/tale/:id")
-  .get(isAuthenticatedUser, getTaleDetails)
+  .get( getTaleDetails)
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateTale)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteTale);
 

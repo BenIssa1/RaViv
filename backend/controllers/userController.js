@@ -5,6 +5,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtTokens");
 const sendEmail = require("../utils/sendEmail");
+const ApiFeatures = require("../utils/apifeatures");
 const crypto = require("crypto");
 
 // Register a User
@@ -192,7 +193,18 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 
 // Get all users(admin)
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
-  const users = await User.find({ role: "user" });
+ /*  const users = await User.find({ role: "user" });
+ */
+  const resultPerPage = 8;
+
+  const apiFeature = new ApiFeatures(
+    User.find({ role: "user" }),
+    req.query
+  )
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+  const users = await apiFeature.query;
 
   res.status(200).json({
     success: true,
@@ -258,5 +270,21 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "User Deleted Successfully",
+  });
+});
+
+
+// Get all conteurs(admin)
+exports.getAdminCounts = catchAsyncErrors(async (req, res, next) => {
+  const usersCount = await User.find({role: 'user'}).count();
+  const ConteurCount = await User.find({role: 'conteur'}).count();
+  const ParentCount = await User.find({role: 'parent'}).count();
+  const StudentCount = await User.find({role: 'student'}).count();
+
+  res.status(200).json({
+    userCount: usersCount,
+    ConteurCount: ConteurCount,
+    ParentCount: ParentCount,
+    StudentCount: StudentCount,
   });
 });

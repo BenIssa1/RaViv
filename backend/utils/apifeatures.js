@@ -7,14 +7,22 @@ class ApiFeatures {
   }
 
   search() {
-    const keyword = this.queryStr.keyword
+    const keyword = this.queryStr.typeSearch == 'title'
       ? {
-          title: {
-            $regex: this.queryStr.keyword,
-            $options: "i",
+        title: {
+          $regex: new RegExp(this.queryStr.keyword, 'i')
+        },
+      }
+      : this.queryStr.typeSearch == 'name' ? {
+        name: {
+          $regex: new RegExp(this.queryStr.keyword, 'i')
+        },
+      }
+        : this.queryStr.typeSearch == 'storyTellersName' ? {
+          storyTellersName: {
+            $regex: new RegExp(this.queryStr.keyword, 'i')
           },
-        }
-      : {};
+        } : {};
 
     const dateSort =
       this.queryStr.dateData == "recent" ? { createdAt: -1 } : { createdAt: 1 };

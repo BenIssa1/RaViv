@@ -16,6 +16,7 @@ const {
   getSingleUser,
   updateUserRole,
   deleteUser,
+  getAdminCounts
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
@@ -40,7 +41,11 @@ router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 // Get All Users
 router
   .route("/admin/users")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
+  .get( getAllUser);
+
+router
+  .route("/admin/counts")
+  .get( getAdminCounts);
 // Get Single User / Update Single User / Delete Single User
 router
   .route("/admin/user/:id")

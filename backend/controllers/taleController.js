@@ -9,7 +9,7 @@ require("dotenv").config({ path: "backend/config/config.env" });
 
 // Create a Tale
 exports.createTale = catchAsyncErrors(async (req, res, next) => {
-  
+
   const storyteller = await Storyteller.findOne({ user: req.user.id });
 
   if (!storyteller) {
@@ -21,36 +21,36 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
     JSON.parse(req.body.questions2),
     JSON.parse(req.body.questions3),
   ];
-  
-    req.body.user = req.user.id;
-    // req.body.videoUrl = data.Location;
-    req.body.questions = questions;
 
-    // Create tale
-    req.body.storyteller = storyteller._id;
-    const tale = await Tale.create(req.body);
+  req.body.user = req.user.id;
+  // req.body.videoUrl = data.Location;
+  req.body.questions = questions;
 
-    // Add Tale to storyteller
-    let newUserStorytellerData = {
-      $push: {
-        tales: tale._id,
-      },
-    };
+  // Create tale
+  req.body.storyteller = storyteller._id;
+  const tale = await Tale.create(req.body);
 
-    await Storyteller.findByIdAndUpdate(
-      storyteller._id,
-      newUserStorytellerData,
-      {
-        new: true,
-        runValidators: true,
-        useFindAndModify: false,
-      }
-    );
+  // Add Tale to storyteller
+  let newUserStorytellerData = {
+    $push: {
+      tales: tale._id,
+    },
+  };
 
-    res.status(201).json({
-      success: true,
-      tale,
-    });
+  await Storyteller.findByIdAndUpdate(
+    storyteller._id,
+    newUserStorytellerData,
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  res.status(201).json({
+    success: true,
+    tale,
+  });
 });
 
 // Get All Tale Admin(tale)
@@ -72,13 +72,21 @@ exports.getAdminTales = catchAsyncErrors(async (req, res, next) => {
     success: true,
     tales,
   });
+
 });
 
 // Get Tale Details
 exports.getTaleDetails = catchAsyncErrors(async (req, res, next) => {
-  const tale = await Tale.findById(req.params.id).populate(
-    "comments storyteller"
+  const tale = await Tale.findById(req.params.id).populate({
+    path: 'comments storyteller',
+    populate: {
+      path: 'user'
+    }
+  }
   );
+  /* const tale = await Tale.findById(req.params.id).populate(
+    "comments storyteller"
+  ); */
 
   if (!tale) {
     return next(new ErrorHander("Tale not found", 404));

@@ -130,7 +130,7 @@ exports.getAllParentStudent = catchAsyncErrors(async (req, res, next) => {
 
 // Get Tale Details
 exports.getStudentDetails = catchAsyncErrors(async (req, res, next) => {
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findById(req.params.id).populate('user parent');
 
   if (!student) {
     return next(new ErrorHander("Student not found", 404));
@@ -222,18 +222,16 @@ exports.getAllStudentsHistoriques = catchAsyncErrors(async (req, res, next) => {
   const studentsIds = parent.students;
   const historicalStudents = []
 
-
-
   for (let index = 0; index < studentsIds.length; index++) {
     const element = studentsIds[index];
 
-    let historicalStudentAll = await HistoricalStudent.find({user: element.user});
+    let historicalStudentAll = await HistoricalStudent.find({ user: element.user });
 
     for (let index2 = 0; index2 < historicalStudentAll.length; index2++) {
       const element = historicalStudentAll[index2];
-      
+
       if (element)
-      historicalStudents.push(element)
+        historicalStudents.push(element)
     }
 
   }
@@ -248,8 +246,8 @@ exports.getAllStudentsHistoriques = catchAsyncErrors(async (req, res, next) => {
 // Get all Parent
 exports.getAllStudentHistoriques = catchAsyncErrors(async (req, res, next) => {
   const student = await Student.findById(req.params.studentId);
-  
-  let StudentHistoricalAll = await HistoricalStudent.find({user: student.user});
+
+  let StudentHistoricalAll = await HistoricalStudent.find({ user: student.user });
 
   res.status(200).json({
     success: true,

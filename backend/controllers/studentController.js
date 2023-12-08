@@ -8,7 +8,7 @@ const sendToken = require("../utils/jwtTokens");
 
 // Register a Parent
 exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
-  const { firstname, lastname, classroom, establishment, email, password } =
+  const { firstname, avatar, lastname, classroom, establishment, email, password } =
     req.body;
 
   const user = await User.create({
@@ -18,7 +18,7 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
     role: "student",
     avatar: {
       public_id: "this sample id",
-      url: "profileurl",
+      url: avatar,
     },
   });
 
@@ -53,12 +53,22 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
+// Get User Detail
+exports.searchStudent = catchAsyncErrors(async (req, res, next) => {
+  // Get students
+  const students = await Student.find({ firstname: { $regex: new RegExp(req.params.name, 'i') } }).populate('user parent');
+
+  res.status(200).json({
+    success: true,
+    students
+  });
+});
 
 // Get User Detail
 exports.getCountStudet = catchAsyncErrors(async (req, res, next) => {
   // Get parent
   const parent = await Parent.findOne({ user: req.user.id });
-  const studentCountOfParent = await Student.find({parent: parent._id}).count();
+  const studentCountOfParent = await Student.find({ parent: parent._id }).count();
 
   res.status(200).json({
     success: true,

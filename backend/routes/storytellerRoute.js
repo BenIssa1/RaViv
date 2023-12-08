@@ -33,11 +33,11 @@ router
   .route("/storyteller/tales")
   .get(isAuthenticatedUser, authorizeRoles("conteur"), getAllStorytellerTales);
 
-router.route("/list-storyteller").get(isAuthenticatedUser, getAllStoryteller);
+router.route("/list-storyteller").get( getAllStoryteller);
 
 router
   .route("/admin/storyteller-asked")
-  .get(isAuthenticatedUser, authorizeRoles("admin"), getAllStorytellerAsked);
+  .get( getAllStorytellerAsked);
 
 router
   .route("/storyteller/update-profile/:id")
