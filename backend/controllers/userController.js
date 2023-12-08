@@ -180,6 +180,8 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
     }
   };
 
+  console.log(newUserData)
+
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
     runValidators: true,
