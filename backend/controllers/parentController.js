@@ -225,7 +225,7 @@ exports.getAllStudentsHistoriques = catchAsyncErrors(async (req, res, next) => {
   for (let index = 0; index < studentsIds.length; index++) {
     const element = studentsIds[index];
 
-    let historicalStudentAll = await HistoricalStudent.find({ user: element.user }).populate("user");
+    let historicalStudentAll = await HistoricalStudent.find({ user: element.user }).populate("user tale");
 
     for (let index2 = 0; index2 < historicalStudentAll.length; index2++) {
       const element = historicalStudentAll[index2];
