@@ -20,6 +20,14 @@ router
   .route("/storyteller/register")
   .post(isAuthenticatedUser, registerStoryteller);
 
+  router
+  .route("/storyteller/tales")
+  .get(isAuthenticatedUser, authorizeRoles("conteur"), getAllStorytellerTales);
+
+  router
+  .route("/admin/storyteller-asked")
+  .get( getAllStorytellerAsked);
+
 router
   .route("/storyteller/:id")
   .get(isAuthenticatedUser, getStorytellerDetails)
@@ -29,15 +37,8 @@ router
     updateUserRoleAndStorytellerIsVerified
   );
 
-router
-  .route("/storyteller/tales")
-  .get(isAuthenticatedUser, authorizeRoles("conteur"), getAllStorytellerTales);
 
 router.route("/list-storyteller").get( getAllStoryteller);
-
-router
-  .route("/admin/storyteller-asked")
-  .get( getAllStorytellerAsked);
 
 router
   .route("/storyteller/update-profile/:id")
