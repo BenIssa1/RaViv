@@ -8,7 +8,7 @@ const sendToken = require("../utils/jwtTokens");
 
 // Register a Parent
 exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
-  const { firstname, avatar, lastname, classroom, establishment, email, password } =
+  const { firstname, lastname, classroom, establishment, email, password } =
     req.body;
 
   const user = await User.create({
@@ -18,7 +18,7 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
     role: "student",
     avatar: {
       public_id: "this sample id",
-      url: avatar,
+      url: 'avatar',
     },
   });
 
@@ -48,7 +48,11 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
         useFindAndModify: false,
       });
 
-      sendToken(user, 201, res);
+      res.status(200).json({
+        success: true,
+        user
+      }); 
+      /* sendToken(user, 201, res); */
     }
   }
 });
