@@ -28,19 +28,6 @@ const taleSchema = new mongoose.Schema({
     required: false,
     default: 'https://i.pinimg.com/originals/d9/66/cb/d966cbf3aadc0db38adc92769a907f63.jpg'
   },
-  
-  // questions: [
-  //   {
-  //     question: {
-  //       type: String,
-  //       required: true,
-  //     },
-  //     response: {
-  //       type: Boolean,
-  //       required: true,
-  //     },
-  //   },
-  // ],
   questions: [
     {
       question: {
