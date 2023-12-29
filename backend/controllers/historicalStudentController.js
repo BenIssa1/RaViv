@@ -11,8 +11,9 @@ const Student = require("../models/studentModel");
 // Register a history student
 exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
   req.body.user = req.user.id;
+  let userRole = req.user.role;
 
-  const getHistotrique = await HistoricalStudent.findOne({ user: req.user.id });
+  const getHistotrique = await HistoricalStudent.findOne({ user: req.user.id, tale:  req.body.taleId });
 
   if (getHistotrique) {
     return next(new ErrorHander("Vous avez déjà répondu aux questions.", 404));
@@ -114,20 +115,35 @@ exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
     note: moyenne,
   });
 
+  res.status(201).json({
+    success: true,
+    historyStudent,
+    arrayError,
+  });
 
-  const message = `Lecture d'un récit.`;
+
+  const message = `Le conte ${tale.title} vient d'être lu par ${req.user.name}`
 
   try {
-    await sendEmail({
-      email: email,
-      subject: `Lecture d'un récit de votre enfant ${req.user.name}`,
-      message,
-    });
+    if (userRole === 'student') { 
+      await sendEmail({
+        email: email,
+        subject: `Lecture d'un récit.`,
+        message,
+      });
+    } else {
+      await sendEmail({
+        email: email,
+        subject: `Lecture d'un récit.`,
+        message: `Merci d'avoir regardé le récit`
+      });
+    }
+    
 
     await sendEmail({
       email: emailStoryteller,
       subject: `Lecture d'un récit`,
-      message: "Une personne a regardé votre récit",
+      message: message,
     });
 
   } catch (error) {
@@ -135,11 +151,7 @@ exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander(error.message, 500));
   }
 
-  res.status(201).json({
-    success: true,
-    historyStudent,
-    arrayError,
-  });
+  
 
 });
 
@@ -147,6 +159,7 @@ exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
 exports.updateHistoryStudentNoteAndPercent = catchAsyncErrors(
   async (req, res, next) => {
     req.body.user = req.user.id;
+    let userRole = req.user.role;
 
     const tale = await Tale.findOne({ _id: req.body.taleId }).populate({
       path: 'storyteller',
@@ -182,28 +195,36 @@ exports.updateHistoryStudentNoteAndPercent = catchAsyncErrors(
 
     await histotrique.save();
 
+    res.status(200).json({
+      success: true,
+    });
 
+    
     try {
-      await sendEmail({
-        email: email,
-        subject: `Resolution d'un conte`,
-        message: `Voici la résolution de votre enfant ${req.user.name}  : ${req.body.resolution} `,
-      });
+      if (userRole === 'student') { 
+        await sendEmail({
+          email: email,
+          subject: `Résolution d'un conte`,
+          message: `Votre enfant ${req.user.name} vient de prendre sa résolution qui est : ${req.body.resolution} `,
+        });
+      } else{
+        await sendEmail({
+          email: email,
+          subject: `Résolution d'un conte`,
+          message: `Merci d'avoir pris votre résolution`,
+        });
+      }
 
       await sendEmail({
         email: emailStoryteller,
-        subject: `Resolution d'un conte`,
-        message: `Voici la résolution d'un utilisateur : ${req.body.resolution}`,
+        subject: `Résolution d'un conte`,
+        message: `L'utilisateur ${req.user.name} vient de prendre sa résolution qui est : ${req.body.resolution}`,
       });
   
     } catch (error) {
   
       return next(new ErrorHander(error.message, 500));
     }
-
-    res.status(200).json({
-      success: true,
-    });
 
   }
 );
