@@ -12,8 +12,9 @@ const Student = require("../models/studentModel");
 exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
   req.body.user = req.user.id;
   let userRole = req.user.role;
+  let userEmail = req.user.email;
 
-  const getHistotrique = await HistoricalStudent.findOne({ user: req.user.id, tale:  req.body.taleId });
+  const getHistotrique = await HistoricalStudent.findOne({ user: req.user.id, tale: req.body.taleId });
 
   if (getHistotrique) {
     return next(new ErrorHander("Vous avez déjà répondu aux questions.", 404));
@@ -121,24 +122,43 @@ exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
     arrayError,
   });
 
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0!
+  let dd = today.getDate();
 
-  const message = `Le conte ${tale.title} vient d'être lu par ${req.user.name}`
+  if (dd < 10) dd = '0' + dd;
+  if (mm < 10) mm = '0' + mm;
+
+  const formattedToday = dd + '/' + mm + '/' + yyyy;
+
+
+  const message = `
+  Le conte ${tale.title} vient d'être lu par ${req.user.name}`
 
   try {
-    if (userRole === 'student') { 
+    if (userRole === 'student') {
       await sendEmail({
         email: email,
         subject: `Lecture d'un récit.`,
-        message,
+        message: `Nous espérons que vous appréciez votre expérience sur Raviv, et nous sommes ravis de vous informer que votre enfant ${req.user.name} a récemment regardé/écouté/lu le conte suivant :
+Titre du Film : ${tale.title}
+Date de Lecture : ${formattedToday}
+Nous espérons que ce conte a répondu à ses attentes et que vous avez apprécié chaque moment. Chez RaViv, notre objectif est de vous offrir une expérience  exceptionnelle, et votre satisfaction est notre priorité.
+        ` ,
       });
     } else {
       await sendEmail({
         email: email,
         subject: `Lecture d'un récit.`,
-        message: `Merci d'avoir regardé le récit`
+        message: `Nous espérons que vous appréciez votre expérience sur Raviv, et nous sommes ravis de vous informer que vous venez récemment regardé/écouté/lu le conte suivant :
+Titre du Film : ${tale.title}
+Date de Lecture : ${formattedToday}
+Nous espérons que ce conte a répondu à ses attentes et que vous avez apprécié chaque moment. Chez RaViv, notre objectif est de vous offrir une expérience  exceptionnelle, et votre satisfaction est notre priorité.
+        `
       });
     }
-    
+
 
     await sendEmail({
       email: emailStoryteller,
@@ -151,7 +171,7 @@ exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander(error.message, 500));
   }
 
-  
+
 
 });
 
@@ -160,19 +180,20 @@ exports.updateHistoryStudentNoteAndPercent = catchAsyncErrors(
   async (req, res, next) => {
     req.body.user = req.user.id;
     let userRole = req.user.role;
+    let userEmail = req.user.email;
 
     const tale = await Tale.findOne({ _id: req.body.taleId }).populate({
       path: 'storyteller',
       populate: { path: 'user' }
     });
-  
+
     let emailStoryteller = tale.storyteller.user.email;
-  
+
     if (!tale) {
       return next(new ErrorHander("Le récit n'existe pas", 404));
     }
 
-    const histotrique = await HistoricalStudent.findOne({ user: req.user.id });
+    const histotrique = await HistoricalStudent.findOne({ user: req.user.id, tale: req.body.taleId });
 
     if (!histotrique) {
       return next(new ErrorHander("Historique du récit n'existe pas", 404));
@@ -199,30 +220,59 @@ exports.updateHistoryStudentNoteAndPercent = catchAsyncErrors(
       success: true,
     });
 
-    
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    const formattedToday = dd + '/' + mm + '/' + yyyy;
+
+
+
     try {
-      if (userRole === 'student') { 
+      if (userRole === 'student') {
         await sendEmail({
           email: email,
           subject: `Résolution d'un conte`,
-          message: `Votre enfant ${req.user.name} vient de prendre sa résolution qui est : ${req.body.resolution} `,
+          message: `Votre enfant ${req.user.name} vient de prendre sa résolution qui est : ${req.body.resolution} 
+Titre du Film : ${tale.title}
+Date de résolution : ${formattedToday}
+          `,
         });
-      } else{
+
+        await sendEmail({
+          email: userEmail,
+          subject: `Résolution d'un conte`,
+          message: `Sommes particulièrement reconnaissants que vous ayez pris le temps de prendre une résolution après avoir visionné ce conte. Chez RaViv, nous nous efforçons de créer une communauté où le partage d'expériences et la connexion avec notre contenu sont au cœur de tout ce que nous faisons.
+Si vous êtes disposé(e) à partager davantage sur la résolution que vous avez prise, n'hésitez pas à nous le faire savoir. Nous adorons entendre les histoires de nos utilisateurs et découvrir comment notre contenu peut avoir un impact positif.
+Merci encore pour votre fidélité et votre soutien continu. Si vous avez des questions, des suggestions ou simplement envie de discuter, notre équipe est toujours à votre disposition.
+          `,
+        });
+      } else {
         await sendEmail({
           email: email,
           subject: `Résolution d'un conte`,
-          message: `Merci d'avoir pris votre résolution`,
+          message: `Sommes particulièrement reconnaissants que vous ayez pris le temps de prendre une résolution après avoir visionné ce conte. Chez RaViv, nous nous efforçons de créer une communauté où le partage d'expériences et la connexion avec notre contenu sont au cœur de tout ce que nous faisons.
+Si vous êtes disposé(e) à partager davantage sur la résolution que vous avez prise, n'hésitez pas à nous le faire savoir. Nous adorons entendre les histoires de nos utilisateurs et découvrir comment notre contenu peut avoir un impact positif.
+Merci encore pour votre fidélité et votre soutien continu. Si vous avez des questions, des suggestions ou simplement envie de discuter, notre équipe est toujours à votre disposition.
+          `,
         });
       }
 
       await sendEmail({
         email: emailStoryteller,
         subject: `Résolution d'un conte`,
-        message: `L'utilisateur ${req.user.name} vient de prendre sa résolution qui est : ${req.body.resolution}`,
+        message: `L'utilisateur ${req.user.name} vient de prendre sa résolution qui est : ${req.body.resolution}
+Titre du Film : ${tale.title}
+Date de résolution : ${formattedToday}
+          `,
       });
-  
+
     } catch (error) {
-  
+
       return next(new ErrorHander(error.message, 500));
     }
 
