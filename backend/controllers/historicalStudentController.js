@@ -9,6 +9,7 @@ const sendEmail = require("../utils/sendEmail");
 const Student = require("../models/studentModel");
 
 // Register a history student
+
 exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
   req.body.user = req.user.id;
   let userRole = req.user.role;
