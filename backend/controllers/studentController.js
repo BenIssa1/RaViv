@@ -13,7 +13,7 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
 
   const user = await User.create({
     name: lastname,
-    email,
+    email: email ? email : lastname + "@gmail.com" ,
     password,
     role: "student",
     avatar: {

@@ -139,7 +139,7 @@ exports.registerHistoryStudent = catchAsyncErrors(async (req, res, next) => {
 
   try {
     if (userRole === 'student') {
-      await sendEmail({
+      /* await sendEmail({
         email: email,
         subject: `Lecture d'un récit.`,
         message: `Nous espérons que vous appréciez votre expérience sur Raviv, et nous sommes ravis de vous informer que votre enfant ${req.user.name} a récemment regardé/écouté/lu le conte suivant :
@@ -147,15 +147,13 @@ Titre du Film : ${tale.title}
 Date de Lecture : ${formattedToday}
 Nous espérons que ce conte a répondu à ses attentes et que vous avez apprécié chaque moment. Chez RaViv, notre objectif est de vous offrir une expérience  exceptionnelle, et votre satisfaction est notre priorité.
         ` ,
-      });
+      }); */
     } else {
       await sendEmail({
         email: email,
         subject: `Lecture d'un récit.`,
-        message: `Nous espérons que vous appréciez votre expérience sur Raviv, et nous sommes ravis de vous informer que vous venez récemment regardé/écouté/lu le conte suivant :
-Titre du Film : ${tale.title}
-Date de Lecture : ${formattedToday}
-Nous espérons que ce conte a répondu à ses attentes et que vous avez apprécié chaque moment. Chez RaViv, notre objectif est de vous offrir une expérience  exceptionnelle, et votre satisfaction est notre priorité.
+        message: `
+Nous espérons que vous appréciez votre expérience sur RaViv, et nous sommes heureux de vous informer que vous avez regardé/écouté/lu le conte ${tale.title},  ${formattedToday}. Partagez votre expérience RaViv avec vos proches.
         `
       });
     }
@@ -244,14 +242,14 @@ Date de résolution : ${formattedToday}
           `,
         });
 
-        await sendEmail({
+       /*  await sendEmail({
           email: userEmail,
           subject: `Résolution d'un conte`,
           message: `Sommes particulièrement reconnaissants que vous ayez pris le temps de prendre une résolution après avoir visionné ce conte. Chez RaViv, nous nous efforçons de créer une communauté où le partage d'expériences et la connexion avec notre contenu sont au cœur de tout ce que nous faisons.
 Si vous êtes disposé(e) à partager davantage sur la résolution que vous avez prise, n'hésitez pas à nous le faire savoir. Nous adorons entendre les histoires de nos utilisateurs et découvrir comment notre contenu peut avoir un impact positif.
 Merci encore pour votre fidélité et votre soutien continu. Si vous avez des questions, des suggestions ou simplement envie de discuter, notre équipe est toujours à votre disposition.
           `,
-        });
+        }); */
       } else {
         await sendEmail({
           email: email,

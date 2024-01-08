@@ -4,6 +4,7 @@ const express = require("express");
 
 const {
   registerUser,
+  loginUserName,
   loginUser,
   logout,
   forgotPassword,
@@ -24,6 +25,8 @@ const router = express.Router();
 
 // Register User
 router.route("/register").post(registerUser);
+// LOgin UserName
+router.route("/login-username").post(loginUserName);
 // LOgin User
 router.route("/login").post(loginUser);
 // Logout User
