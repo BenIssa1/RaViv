@@ -11,9 +11,11 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
   const { firstname, lastname, classroom, establishment, email, password } =
     req.body;
 
+  let randomNumber = Math.random() * 100
+
   const user = await User.create({
     name: lastname,
-    email: email ? email : lastname + "@gmail.com" ,
+    email: firstname + lastname + randomNumber + "@gmail.com",
     password,
     role: "student",
     avatar: {
@@ -51,7 +53,7 @@ exports.registerStudent = catchAsyncErrors(async (req, res, next) => {
       res.status(200).json({
         success: true,
         user
-      }); 
+      });
       /* sendToken(user, 201, res); */
     }
   }

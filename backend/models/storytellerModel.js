@@ -19,6 +19,10 @@ const storytellerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  cvUrl: {
+    type: String,
+    required: false,
+  },
   address: {
     type: String,
     required: true,
