@@ -9,6 +9,7 @@ const {
   getAllStorytellerAsked,
   updateStoryteller,
   getStorytellerDetails,
+  deleteStoryteller,
   updateUserRoleAndStorytellerIsVerified,
 } = require("../controllers/storytellerController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -35,7 +36,7 @@ router
     isAuthenticatedUser,
     authorizeRoles("admin"),
     updateUserRoleAndStorytellerIsVerified
-  );
+  ).delete(isAuthenticatedUser, authorizeRoles("admin"), deleteStoryteller);
 
 
 router.route("/list-storyteller").get( getAllStoryteller);

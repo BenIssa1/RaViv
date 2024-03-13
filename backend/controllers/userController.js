@@ -32,19 +32,19 @@ exports.loginUserName = catchAsyncErrors(async (req, res, next) => {
   // checking if user has given password and email both
 
   if (!name || !password) {
-    return next(new ErrorHander("Please Enter Name & Password", 400));
+    return next(new ErrorHander("Veuillez entrer votre nom et votre mot de passe", 400));
   }
 
   const user = await User.findOne({ name }).select("+password");
 
   if (!user) {
-    return next(new ErrorHander("Invalid name or password", 401));
+    return next(new ErrorHander("Nom ou mot de passe invalide", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHander("Invalid email or password", 401));
+    return next(new ErrorHander("Email ou mot de passe invalide", 401));
   }
 
   sendToken(user, 200, res);
@@ -57,19 +57,19 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   // checking if user has given password and email both
 
   if (!email || !password) {
-    return next(new ErrorHander("Please Enter Email & Password", 400));
+    return next(new ErrorHander("Veuillez entrer votre e-mail et votre mot de passe", 400));
   }
 
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorHander("Invalid email or password", 401));
+    return next(new ErrorHander("Email ou mot de passe invalide", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHander("Invalid email or password", 401));
+    return next(new ErrorHander("Email ou mot de passe invalide", 401));
   }
 
   sendToken(user, 200, res);
@@ -84,7 +84,7 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Logged Out",
+    message: "Déconnecté",
   });
 });
 
@@ -93,7 +93,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new ErrorHander("User not found", 404));
+    return next(new ErrorHander("Utilisateur non trouvé", 404));
   }
 
   // Get ResetPassword Token
@@ -105,18 +105,18 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     "host"
   )}/api/v1/password/reset/${resetToken}`;
 
-  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
+  const message = `Votre jeton de réinitialisation de mot de passe est :- \n\n ${resetPasswordUrl} \n\nSi vous n'avez pas demandé cet e-mail, veuillez l'ignorer.`;
 
   try {
     await sendEmail({
       email: user.email,
-      subject: `Ecommerce Password Recovery`,
+      subject: `Récupération de mot de passe`,
       message,
     });
 
     res.status(200).json({
       success: true,
-      message: `Email sent to ${user.email} successfully`,
+      message: `Email envoyé à ${user.email} avec succès`,
     });
   } catch (error) {
     user.resetPasswordToken = undefined;
@@ -144,14 +144,14 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   if (!user) {
     return next(
       new ErrorHander(
-        "Reset Password Token is invalid or has been expired",
+        "Le jeton de réinitialisation du mot de passe n’est pas valide ou a expiré",
         400
       )
     );
   }
 
   if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorHander("Password does not password", 400));
+    return next(new ErrorHander("Le mot de passe n'est pas un mot de passe", 400));
   }
 
   user.password = req.body.password;
@@ -180,11 +180,11 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHander("Old password is incorrect", 400));
+    return next(new ErrorHander("Ancien mot de passe est incorrect", 400));
   }
 
   if (req.body.newPassword !== req.body.confirmPassword) {
-    return next(new ErrorHander("password does not match", 400));
+    return next(new ErrorHander("le mot de passe ne correspond pas", 400));
   }
 
   user.password = req.body.newPassword;
@@ -255,7 +255,7 @@ exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ErrorHander(`User does not exist with Id: ${req.params.id}`)
+      new ErrorHander(`L'utilisateur n'existe pas avec son identifiant: ${req.params.id}`)
     );
   }
 
@@ -288,7 +288,7 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ErrorHander(`User does not exist with Id: ${req.params.id}`, 400)
+      new ErrorHander(`L'utilisateur n'existe pas avec son identifiant: ${req.params.id}`, 400)
     );
   }
 
@@ -296,7 +296,7 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "User Deleted Successfully",
+    message: "Utilisateur supprimé avec succès",
   });
 });
 

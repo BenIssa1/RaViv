@@ -254,9 +254,11 @@ Merci encore pour votre fidélité et votre soutien continu. Si vous avez des qu
         await sendEmail({
           email: email,
           subject: `Résolution d'un conte`,
-          message: `Sommes particulièrement reconnaissants que vous ayez pris le temps de prendre une résolution après avoir visionné ce conte. Chez RaViv, nous nous efforçons de créer une communauté où le partage d'expériences et la connexion avec notre contenu sont au cœur de tout ce que nous faisons.
-Si vous êtes disposé(e) à partager davantage sur la résolution que vous avez prise, n'hésitez pas à nous le faire savoir. Nous adorons entendre les histoires de nos utilisateurs et découvrir comment notre contenu peut avoir un impact positif.
-Merci encore pour votre fidélité et votre soutien continu. Si vous avez des questions, des suggestions ou simplement envie de discuter, notre équipe est toujours à votre disposition.
+          message: `Bravo ! Merci d'avoir pris cette résolution. 
+          Chez RaViv, nous nous efforçons de créer une communauté où le partage d'expériences et la connexion avec notre contenu sont au cœur de tout ce que nous faisons.
+          Si vous êtes disposé(e) à échanger davantage sur vos résolutions, n'hésitez pas à nous le faire savoir. Nous aimons partager les expériences de nos utilisateurs et découvrir comment notre contenu peut avoir un impact positif sur vous et sur vos proches.
+          Merci pour votre fidélité ! Si vous avez des questions, des suggestions ou simplement envie de discuter, notre équipe est toujours à votre disposition. 
+          Cliquez sur : <a href="mailto:info@ravic-africa.com">info@ravic-africa.com</a>
           `,
         });
       }

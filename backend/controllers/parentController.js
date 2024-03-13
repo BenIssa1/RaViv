@@ -119,7 +119,7 @@ exports.getAllParentStudent = catchAsyncErrors(async (req, res, next) => {
   );
 
   if (!parent) {
-    return next(new ErrorHander("Parent not found", 404));
+    return next(new ErrorHander("Parent introuvable", 404));
   }
 
   res.status(200).json({
@@ -133,7 +133,7 @@ exports.getStudentDetails = catchAsyncErrors(async (req, res, next) => {
   const student = await Student.findById(req.params.id).populate('user parent');
 
   if (!student) {
-    return next(new ErrorHander("Student not found", 404));
+    return next(new ErrorHander("Étudiant introuvable", 404));
   }
 
   res.status(200).json({
@@ -148,7 +148,7 @@ exports.updateStudent = catchAsyncErrors(async (req, res, next) => {
   let student = await Student.findById(req.params.id);
 
   if (!student) {
-    return next(new ErrorHander("Student not found", 404));
+    return next(new ErrorHander("Étudiant introuvable", 404));
   }
 
   student = await Student.findByIdAndUpdate(req.params.id, req.body, {
@@ -169,7 +169,7 @@ exports.updateParent = catchAsyncErrors(async (req, res, next) => {
   let parent = await Parent.findById(req.params.id);
 
   if (!parent) {
-    return next(new ErrorHander("Parent not found", 404));
+    return next(new ErrorHander("Parent introuvable", 404));
   }
 
   parent = await Parent.findByIdAndUpdate(req.params.id, req.body, {
@@ -190,7 +190,7 @@ exports.deleteStudent = catchAsyncErrors(async (req, res, next) => {
   const student = await Student.findById(req.params.id);
 
   if (!student) {
-    return next(new ErrorHander("Student not found", 404));
+    return next(new ErrorHander("Étudiant introuvable", 404));
   }
 
   const parent = await Parent.findOne({ user: req.user.id });
@@ -212,7 +212,7 @@ exports.deleteStudent = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Student Delete Successfully",
+    message: "Étudiant supprimé avec succès",
   });
 });
 

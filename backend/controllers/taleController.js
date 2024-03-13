@@ -13,7 +13,7 @@ exports.createTale = catchAsyncErrors(async (req, res, next) => {
   const storyteller = await Storyteller.findOne({ user: req.user.id });
 
   if (!storyteller) {
-    return next(new ErrorHander("Storyteller not found", 404));
+    return next(new ErrorHander("Conteur introuvable", 404));
   }
 
   let questions = [
@@ -89,7 +89,7 @@ exports.getTaleDetails = catchAsyncErrors(async (req, res, next) => {
   ); */
 
   if (!tale) {
-    return next(new ErrorHander("Tale not found", 404));
+    return next(new ErrorHander("Conte introuvable", 404));
   }
 
   res.status(200).json({
@@ -105,7 +105,7 @@ exports.getAllTales = catchAsyncErrors(async (req, res, next) => {
   );
 
   if (!tale) {
-    return next(new ErrorHander("Tale not found", 404));
+    return next(new ErrorHander("Conte introuvable", 404));
   }
 
   res.status(200).json({
@@ -120,7 +120,7 @@ exports.updateTale = catchAsyncErrors(async (req, res, next) => {
   let tale = await Tale.findById(req.params.id);
 
   if (!tale) {
-    return next(new ErrorHander("Tale not found", 404));
+    return next(new ErrorHander("Conte introuvable", 404));
   }
 
   let questions = [
@@ -149,7 +149,7 @@ exports.updateTaleLike = catchAsyncErrors(async (req, res, next) => {
   let tale = await Tale.findById(req.params.id);
 
   if (!tale) {
-    return next(new ErrorHander("Tale not found", 404));
+    return next(new ErrorHander("Conte introuvable", 404));
   }
 
   let datas = tale.userLikes;
@@ -210,14 +210,14 @@ exports.deleteTale = catchAsyncErrors(async (req, res, next) => {
   const tale = await Tale.findById(req.params.id);
 
   if (!tale) {
-    return next(new ErrorHander("Tale not found", 404));
+    return next(new ErrorHander("Conte introuvable", 404));
   }
 
   await tale.remove();
 
   res.status(200).json({
     success: true,
-    message: "Tale Delete Successfully",
+    message: "Conte supprimé avec succès",
   });
 });
 
@@ -226,6 +226,6 @@ exports.deleteTale = catchAsyncErrors(async (req, res, next) => {
 exports.test = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
-    message: "Tale Delete Successfully",
+    message: "Conte supprimé avec succès",
   });
 });

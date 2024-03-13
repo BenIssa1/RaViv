@@ -98,7 +98,7 @@ exports.getAllStorytellerTales = catchAsyncErrors(async (req, res, next) => {
   );
 
   if (!storyteller) {
-    return next(new ErrorHander("Storyteller not found", 404));
+    return next(new ErrorHander("Conteur introuvable", 404));
   }
 
   res.status(200).json({
@@ -113,7 +113,7 @@ exports.updateStoryteller = catchAsyncErrors(async (req, res, next) => {
   let storyteller = await Storyteller.findById(req.params.id);
 
   if (!storyteller) {
-    return next(new ErrorHander("Storyteller not found", 404));
+    return next(new ErrorHander("Conteur introuvable", 404));
   }
 
   storyteller = await Storyteller.findByIdAndUpdate(req.params.id, req.body, {
@@ -134,11 +134,38 @@ exports.getStorytellerDetails = catchAsyncErrors(async (req, res, next) => {
   });
 
   if (!storyteller) {
-    return next(new ErrorHander("Storyteller not found", 404));
+    return next(new ErrorHander("Conteur introuvable", 404));
   }
 
   res.status(200).json({
     success: true,
     storyteller,
+  });
+});
+
+// Delete User --Admin
+exports.deleteStoryteller = catchAsyncErrors(async (req, res, next) => {
+  const storyteller = await Storyteller.findById(req.params.id);
+
+  if (!storyteller) {
+    return next(
+      new ErrorHander(`Le conteur n'existe pas avec son identifiant: ${req.params.id}`, 400)
+    );
+  }
+
+  if (storyteller.isVerified) {
+    const user = await User.findById(storyteller.user);
+
+    if (user) {
+      await user.remove();
+      await storyteller.remove();
+    }
+  } else {
+    await storyteller.remove();
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Conteur supprimé avec succès",
   });
 });
